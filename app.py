@@ -5,6 +5,14 @@ import datetime
 import random
 import requests
 import json
+
+# Crear la instancia de Flask PRIMERO
+app = Flask(__name__)
+
+# Configuración básica
+app.config['SECRET_KEY'] = 'clave-secreta-para-examen'
+
+# Principio Single Responsibility: Cada función una tarea específica
 class DatabaseManager:
     @staticmethod
     def crear_tabla():
@@ -100,9 +108,15 @@ class CotizacionGenerator:
         }
         return servicios.get(tipo_servicio, tipo_servicio)
 
-# Agregar ruta para generar cotización
+# RUTAS DE LA APLICACIÓN
+@app.route('/')
+def index():
+    """Ruta principal que muestra el formulario"""
+    return render_template('index.html')
+
 @app.route('/generar-cotizacion', methods=['POST'])
 def generar_cotizacion():
+    """Ruta para generar una nueva cotización"""
     try:
         # Recibir datos del formulario
         datos = request.get_json()
@@ -149,20 +163,9 @@ def generar_cotizacion():
         print(f"Error en generar_cotizacion: {e}")
         return jsonify({'success': False, 'error': 'Error interno del servidor'})
 
-# Modificar la función principal para crear la tabla al inicio
+# Ejecutar la aplicación
 if __name__ == '__main__':
     # Crear tabla al iniciar la aplicación
     DatabaseManager.crear_tabla()
-    app.run(debug=True)
-    
-app = Flask(__name__)
-
-# Configuración básica
-app.config['SECRET_KEY'] = 'clave-secreta-para-examen'
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-if __name__ == '__main__':
+    print("🚀 Iniciando servidor Flask...")
     app.run(debug=True)
