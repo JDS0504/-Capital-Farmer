@@ -141,8 +141,12 @@ function enviarFormulario(formData) {
         },
         body: JSON.stringify(formData)
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Respuesta recibida:', response.status);
+        return response.json();
+    })
     .then(data => {
+        console.log('Datos recibidos:', data);
         if (data.success) {
             AlertManager.mostrarCotizacion(data.cotizacion);
         } else {
