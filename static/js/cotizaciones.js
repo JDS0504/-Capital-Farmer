@@ -29,7 +29,7 @@ class AlertManager {
     static mostrarCargando() {
         Swal.fire({
             title: 'Generando Cotización',
-            text: 'Analizando su caso con inteligencia artificial...',
+            text: 'Analizando su caso...',
             icon: 'info',
             allowOutsideClick: false,
             showConfirmButton: false,
