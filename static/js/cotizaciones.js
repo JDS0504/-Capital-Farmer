@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function enviarFormulario(formData) {
     AlertManager.mostrarCargando();
     
-    fetch('/generar-cotizacion', {
+    fetch('/sistema/generar-cotizacion', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
