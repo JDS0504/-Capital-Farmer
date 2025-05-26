@@ -7,39 +7,224 @@
     
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    
+
+    <!-- Personalizado CSS -->
+    <link rel="stylesheet" href="../static/css/style.css">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+
 </head>
 <body>
-    <!-- Navbar con Bulma -->
-    <nav class="navbar is-primary" role="navigation">
-        <div class="navbar-brand">
-            <div class="navbar-item">
-                <i class="fas fa-scales-balanced mr-2"></i>
-                <strong>Capital & Farmer</strong>
+    <!-- Navbar profesional con Bulma -->
+    <nav class="navbar is-primary is-fixed-top" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <div class="navbar-item">
+                    <span class="icon is-large mr-3">
+                        <i class="fas fa-scales-balanced fa-2x"></i>
+                    </span>
+                    <div>
+                        <strong class="is-size-4">Capital & Farmer</strong>
+                        <p class="is-size-7 has-text-light">Servicios Legales Profesionales</p>
+                    </div>
+                </div>
+                
+                <!-- Hamburger menu para móvil -->
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div id="navbarMenu" class="navbar-menu">
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-light is-outlined" href="/">
+                                <span class="icon">
+                                    <i class="fas fa-home"></i>
+                                </span>
+                                <span>Inicio</span>
+                            </a>
+                            <a class="button is-light is-outlined" href="">
+                                <span class="icon">
+                                    <i class="fas fa-calculator"></i>
+                                </span>
+                                <span>Cotizar</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
+    <!-- Espaciador para navbar fijo -->
+    <div class="mt-6 pt-2"></div>
+
     <!-- Contenido principal -->
-    <section class="section">
+    <main class="section">
         <div class="container">
             {% block content %}{% endblock %}
         </div>
-    </section>
+    </main>
 
-    <!-- Footer -->
-    <footer class="footer has-background-light">
-        <div class="content has-text-centered">
-            <p>
-                <strong>Sistema de Cotizaciones Legales</strong> - Capital & Farmer
-            </p>
+    <!-- Footer profesional elegante -->
+    <footer class="footer has-background-dark mt-6">
+        <div class="container">
+            <div class="content">
+                <!-- Sección principal -->
+                <div class="columns is-vcentered mb-5">
+                    <div class="column is-4 mr-4">
+                        <div class="has-text-left">
+                            <div class="mb-4">
+                                <span class="icon-text">
+                                    <span class="icon has-text-primary mr-3">
+                                        <i class="fas fa-scales-balanced fa-lg"></i>
+                                    </span>
+                                    <span class="title is-4 has-text-white">Capital & Farmer</span>
+                                </span>
+                            </div>
+                            
+                            <div class="content has-text-grey-light">
+                                <p class="subtitle is-6 has-text-grey-light mb-3">
+                                    Sistema de Cotizaciones Legales Profesional
+                                </p>
+                                <p class="is-size-7 has-text-justified">
+                                    Plataforma especializada en la generación de cotizaciones precisas y profesionales para servicios jurídicos especializados. Soluciones tecnológicas al servicio del derecho.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="column is-4 ml-4">
+                        <div class="">
+                            <p class="title is-5 has-text-white mb-4">Servicios Legales</p>
+                            
+                            <div class="content has-text-grey-light">
+                                <p class="mb-2">
+                                    <i class="fas fa-chevron-right has-text-primary mr-2"></i>
+                                    Derecho Civil y Comercial
+                                </p>
+                                <p class="mb-2">
+                                    <i class="fas fa-chevron-right has-text-primary mr-2"></i>
+                                    Derecho Empresarial y Societario
+                                </p>
+                                <p class="mb-2">
+                                    <i class="fas fa-chevron-right has-text-primary mr-2"></i>
+                                    Derecho Laboral y Tributario
+                                </p>
+                                <p class="mb-2">
+                                    <i class="fas fa-chevron-right has-text-primary mr-2"></i>
+                                    Asesoría Legal Integral
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="column is-4">
+                        <div class=" has-text-centered-mobile">
+                            <p class="title is-5 has-text-white mb-4">Información de Contacto</p>
+                            
+                            <div class="content has-text-grey-light">
+                                <div class="field">
+                                    <p class="control">
+                                        <span class="icon-text">
+                                            <span class="icon has-text-primary">
+                                                <i class="fas fa-phone"></i>
+                                            </span>
+                                            <span>+51 123 456 789</span>
+                                        </span>
+                                    </p>
+                                </div>
+                                
+                                <div class="field">
+                                    <p class="control">
+                                        <span class="icon-text">
+                                            <span class="icon has-text-primary">
+                                                <i class="fas fa-envelope"></i>
+                                            </span>
+                                            <span>contacto@capitalfarmer.com</span>
+                                        </span>
+                                    </p>
+                                </div>
+                                
+                                <div class="field">
+                                    <p class="control">
+                                        <span class="icon-text">
+                                            <span class="icon has-text-primary">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                            </span>
+                                            <span>Lima, Perú</span>
+                                        </span>
+                                    </p>
+                                </div>
+                                
+                                <div class="field mt-4">
+                                    <p class="control">
+                                        <span class="icon-text">
+                                            <span class="icon has-text-primary">
+                                                <i class="fas fa-clock"></i>
+                                            </span>
+                                            <span class="is-size-7">Lun - Vie: 9:00 - 18:00</span>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Separador -->
+                <hr class="has-background-grey">
+                
+                <!-- Footer inferior -->
+                <div class="level is-mobile">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="has-text-grey-light is-size-7">
+                                © 2024 Capital & Farmer. Todos los derechos reservados.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="level-right">
+                        <div class="level-item">
+                            <p class="has-text-grey is-size-7">
+                                <i class="fas fa-shield-alt mr-1"></i>
+                                Desarrollado con estándares profesionales
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
+
+    <!-- Script para navbar mobile -->
+    <script>
+        // Funcionalidad del menú hamburguesa
+        document.addEventListener('DOMContentLoaded', () => {
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            
+            if ($navbarBurgers.length > 0) {
+                $navbarBurgers.forEach(el => {
+                    el.addEventListener('click', () => {
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
+                        el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+                    });
+                });
+            }
+        });
+    </script>
 
     {% block scripts %}{% endblock %}
 </body>
