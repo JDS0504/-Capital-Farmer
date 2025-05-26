@@ -9,22 +9,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 
     <!-- Personalizado CSS -->
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-
 </head>
 <body>
     <!-- Navbar profesional con Bulma -->
     <nav class="navbar is-primary is-fixed-top" role="navigation" aria-label="main navigation">
         <div class="container">
             <div class="navbar-brand">
-                <div class="navbar-item">
+                <a class="navbar-item" href="{{ url_for('index') }}">
                     <span class="icon is-large mr-3">
                         <i class="fas fa-scales-balanced fa-2x"></i>
                     </span>
@@ -32,7 +30,7 @@
                         <strong class="is-size-4">Capital & Farmer</strong>
                         <p class="is-size-7 has-text-light">Servicios Legales Profesionales</p>
                     </div>
-                </div>
+                </a>
                 
                 <!-- Hamburger menu para móvil -->
                 <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
@@ -43,24 +41,76 @@
             </div>
 
             <div id="navbarMenu" class="navbar-menu">
+                {% if session.user_id %}
+                <!-- Menú para usuarios autenticados -->
+                <div class="navbar-start">
+                    <a class="navbar-item" href="{{ url_for('dashboard') }}">
+                        <span class="icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="navbar-item" href="{{ url_for('cotizar') }}">
+                        <span class="icon">
+                            <i class="fas fa-file-contract"></i>
+                        </span>
+                        <span>Nueva Cotización</span>
+                    </a>
+                </div>
+                
+                <div class="navbar-end">
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link has-text-white">
+                            <span class="icon">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span>{{ session.username }}</span>
+                            <span class="tag is-light is-small ml-2">{{ session.rol|title }}</span>
+                        </a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ url_for('dashboard') }}">
+                                <span class="icon">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </span>
+                                <span>Mi Dashboard</span>
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{{ url_for('logout') }}">
+                                <span class="icon has-text-danger">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </span>
+                                <span>Cerrar Sesión</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Menú para usuarios no autenticados -->
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
-                            <a class="button is-light is-outlined" href="/">
+                            <a class="button is-light is-outlined" href="{{ url_for('index') }}">
                                 <span class="icon">
                                     <i class="fas fa-home"></i>
                                 </span>
                                 <span>Inicio</span>
                             </a>
-                            <a class="button is-light is-outlined" href="">
+                            <a class="button is-light is-outlined" href="{{ url_for('login') }}">
                                 <span class="icon">
-                                    <i class="fas fa-calculator"></i>
+                                    <i class="fas fa-sign-in-alt"></i>
                                 </span>
-                                <span>Cotizar</span>
+                                <span>Iniciar Sesión</span>
+                            </a>
+                            <a class="button is-light" href="{{ url_for('register') }}">
+                                <span class="icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </span>
+                                <span>Registrarse</span>
                             </a>
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -97,40 +147,73 @@
                                     Sistema de Cotizaciones Legales Profesional
                                 </p>
                                 <p class="is-size-7 has-text-justified">
-                                    Plataforma especializada en la generación de cotizaciones precisas y profesionales para servicios jurídicos especializados. Soluciones tecnológicas al servicio del derecho.
+                                    Plataforma especializada en la generación de cotizaciones precisas y profesionales para servicios jurídicos especializados. Soluciones tecnológicas al servicio del derecho con inteligencia artificial integrada.
                                 </p>
+                                {% if session.user_id %}
+                                <div class="mt-3">
+                                    <span class="tag is-success is-light">
+                                        <i class="fas fa-user-check mr-1"></i>
+                                        Conectado como {{ session.username }}
+                                    </span>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                     
                     <div class="column is-4 ml-4">
                         <div class="">
-                            <p class="title is-5 has-text-white mb-4">Servicios Legales</p>
+                            <p class="title is-5 has-text-white mb-4">
+                                <i class="fas fa-briefcase mr-2"></i>
+                                Servicios Legales
+                            </p>
                             
                             <div class="content has-text-grey-light">
                                 <p class="mb-2">
                                     <i class="fas fa-chevron-right has-text-primary mr-2"></i>
-                                    Derecho Civil y Comercial
+                                    Constitución de Empresas (S/ 1,500)
                                 </p>
                                 <p class="mb-2">
                                     <i class="fas fa-chevron-right has-text-primary mr-2"></i>
-                                    Derecho Empresarial y Societario
+                                    Defensa Laboral (S/ 2,000)
                                 </p>
                                 <p class="mb-2">
                                     <i class="fas fa-chevron-right has-text-primary mr-2"></i>
-                                    Derecho Laboral y Tributario
+                                    Consultoría Tributaria (S/ 800)
                                 </p>
                                 <p class="mb-2">
                                     <i class="fas fa-chevron-right has-text-primary mr-2"></i>
-                                    Asesoría Legal Integral
+                                    Asesoría Legal con IA Integrada
                                 </p>
+                                {% if session.user_id %}
+                                <div class="mt-3">
+                                    <a href="{{ url_for('cotizar') }}" class="button is-primary is-small">
+                                        <span class="icon">
+                                            <i class="fas fa-calculator"></i>
+                                        </span>
+                                        <span>Generar Cotización</span>
+                                    </a>
+                                </div>
+                                {% else %}
+                                <div class="mt-3">
+                                    <a href="{{ url_for('login') }}" class="button is-outlined is-primary is-small">
+                                        <span class="icon">
+                                            <i class="fas fa-sign-in-alt"></i>
+                                        </span>
+                                        <span>Acceso al Sistema</span>
+                                    </a>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                     
                     <div class="column is-4">
-                        <div class=" has-text-centered-mobile">
-                            <p class="title is-5 has-text-white mb-4">Información de Contacto</p>
+                        <div class="has-text-centered-mobile">
+                            <p class="title is-5 has-text-white mb-4">
+                                <i class="fas fa-address-card mr-2"></i>
+                                Información de Contacto
+                            </p>
                             
                             <div class="content has-text-grey-light">
                                 <div class="field">
@@ -176,6 +259,19 @@
                                         </span>
                                     </p>
                                 </div>
+
+                                {% if not session.user_id %}
+                                <div class="field mt-4">
+                                    <p class="control">
+                                        <a href="{{ url_for('login') }}" class="button is-outlined is-primary is-small">
+                                            <span class="icon">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </span>
+                                            <span>Acceso al Sistema</span>
+                                        </a>
+                                    </p>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -189,7 +285,7 @@
                     <div class="level-left">
                         <div class="level-item">
                             <p class="has-text-grey-light is-size-7">
-                                © 2024 Capital & Farmer. Todos los derechos reservados.
+                                © 2025 Capital & Farmer. Todos los derechos reservados.
                             </p>
                         </div>
                     </div>
@@ -197,8 +293,11 @@
                     <div class="level-right">
                         <div class="level-item">
                             <p class="has-text-grey is-size-7">
-                                <i class="fas fa-shield-alt mr-1"></i>
-                                Desarrollado con estándares profesionales
+                                <i class="fas fa-robot mr-1"></i>
+                                Desarrollado con IA integrada - Groq API
+                                {% if session.user_id %}
+                                | <i class="fas fa-shield-alt mr-1"></i>Sesión segura
+                                {% endif %}
                             </p>
                         </div>
                     </div>
@@ -223,7 +322,44 @@
                     });
                 });
             }
+
+            // Auto-cerrar mensajes flash después de 5 segundos
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(notification => {
+                const deleteButton = notification.querySelector('.delete');
+                if (deleteButton) {
+                    // Auto cerrar después de 5 segundos
+                    setTimeout(() => {
+                        if (notification.parentElement) {
+                            notification.style.opacity = '0';
+                            setTimeout(() => {
+                                notification.remove();
+                            }, 300);
+                        }
+                    }, 5000);
+                }
+            });
         });
+
+        // Función para mostrar notificaciones toast
+        function showToast(message, type = 'info') {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: type,
+                title: message
+            });
+        }
     </script>
 
     {% block scripts %}{% endblock %}

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Capital & Farmer{% endblock %}
+
+{% block content %}
+<!-- Header del dashboard -->
+<div class="level">
+    <div class="level-left">
+        <div class="level-item">
+            <div>
+                <h1 class="title is-3 mb-5">
+                    <i class="fas fa-tachometer-alt mr-2"></i>
+                    Dashboard
+                </h1>
+                <p class="subtitle is-5">
+                    Bienvenido, <strong>{{ session.username }}</strong>
+                    <span class="tag is-primary ml-2">{{ session.rol|title }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="level-right">
+        <div class="level-item">
+            <div class="buttons">
+                <a href="{{ url_for('cotizar') }}" class="button is-primary">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Nueva Cotización</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="button is-light">
+                    <span class="icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </span>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mostrar mensajes flash -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="notification is-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' if category == 'info' else 'warning' }}">
+                <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Estadísticas rápidas -->
+<div class="columns">
+    <div class="column">
+        <div class="box has-text-centered">
+            <p class="heading">Cotizaciones Generadas</p>
+            <p class="title">{{ cotizaciones|length }}</p>
+        </div>
+    </div>
+    <div class="column">
+        <div class="box has-text-centered">
+            <p class="heading">Este Mes</p>
+            <p class="title">{{ cotizaciones|length }}</p>
+        </div>
+    </div>
+    <div class="column">
+        <div class="box has-text-centered">
+            <p class="heading">Estado</p>
+            <p class="title has-text-success">Activo</p>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de cotizaciones -->
+<div class="box">
+    <h2 class="title is-4">
+        <i class="fas fa-file-contract mr-2"></i>
+        Mis Cotizaciones Recientes
+    </h2>
+    
+    {% if cotizaciones %}
+        <div class="table-container">
+            <table class="table is-fullwidth is-striped is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Cliente</th>
+                        <th>Servicio</th>
+                        <th>Precio</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cotizacion in cotizaciones %}
+                    <tr>
+                        <td>
+                            <strong class="has-text-primary">{{ cotizacion[0] }}</strong>
+                        </td>
+                        <td>{{ cotizacion[1] }}</td>
+                        <td>
+                            <span class="tag is-info">{{ cotizacion[2] }}</span>
+                        </td>
+                        <td>
+                            <strong class="has-text-success">S/ {{ cotizacion[3] }}</strong>
+                        </td>
+                        <td>{{ cotizacion[4][:16] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="has-text-centered py-6">
+            <i class="fas fa-file-alt fa-3x has-text-grey-light mb-4"></i>
+            <p class="subtitle">No tiene cotizaciones aún</p>
+            <a href="{{ url_for('cotizar') }}" class="button is-primary">
+                <span class="icon">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span>Crear Primera Cotización</span>
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

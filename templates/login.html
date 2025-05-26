@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - Capital & Farmer{% endblock %}
+
+{% block content %}
+<div class="columns is-centered">
+    <div class="column is-4">
+        <div class="box">
+            <div class="has-text-centered mb-5">
+                <figure class="image is-64x64 is-inline-block">
+                    <i class="fas fa-scales-balanced fa-3x has-text-primary"></i>
+                </figure>
+                <h1 class="title is-4 mt-3">Iniciar Sesión</h1>
+                <p class="subtitle is-6">Sistema de Cotizaciones Legales</p>
+            </div>
+
+            <!-- Mostrar mensajes flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="notification is-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' if category == 'info' else 'warning' }}">
+                            <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="field">
+                    <label class="label">Usuario</label>
+                    <div class="control has-icons-left">
+                        <input class="input" type="text" name="username" placeholder="Ingrese su usuario" required>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-user"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Contraseña</label>
+                    <div class="control has-icons-left">
+                        <input class="input" type="password" name="password" placeholder="Ingrese su contraseña" required>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-primary is-fullwidth" type="submit">
+                            <span class="icon">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </span>
+                            <span>Iniciar Sesión</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <hr>
+            <div class="has-text-centered">
+                <p>¿No tiene cuenta? 
+                    <a href="{{ url_for('register') }}" class="has-text-primary">
+                        <strong>Registrarse aquí</strong>
+                    </a>
+                </p>
+            </div>
+
+            <!-- Credenciales de prueba -->
+            <div class="notification is-light mt-4">
+                <strong>💡 Credenciales de prueba:</strong><br>
+                <strong>Usuario:</strong> admin<br>
+                <strong>Contraseña:</strong> admin123
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,16 +1,131 @@
 # app.py
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 import sqlite3
 import datetime
 import random
 import requests
 import json
+from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 
 # Crear la instancia de Flask PRIMERO
 app = Flask(__name__)
 
 # Configuración básica
-app.config['SECRET_KEY'] = 'clave-secreta-para-examen'
+app.config['SECRET_KEY'] = 'clave-secreta-para-examen-capital-farmer-2025'
+
+# Principio Single Responsibility: Manejo de usuarios separado
+class UserManager:
+    @staticmethod
+    def crear_tabla_usuarios():
+        """Crea la tabla de usuarios si no existe"""
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                rol TEXT DEFAULT 'abogado',
+                fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+                activo INTEGER DEFAULT 1
+            )
+        ''')
+        
+        conn.commit()
+        conn.close()
+        print("✓ Tabla de usuarios creada/verificada")
+
+    @staticmethod
+    def crear_usuario_admin():
+        """Crea un usuario administrador por defecto"""
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        
+        # Verificar si ya existe un admin
+        cursor.execute("SELECT COUNT(*) FROM usuarios WHERE username = 'admin'")
+        if cursor.fetchone()[0] == 0:
+            password_hash = generate_password_hash('admin123')
+            cursor.execute('''
+                INSERT INTO usuarios (username, email, password_hash, rol)
+                VALUES (?, ?, ?, ?)
+            ''', ('admin', 'admin@capitalfarmer.com', password_hash, 'admin'))
+            conn.commit()
+            print("✅ Usuario admin creado: admin/admin123")
+            
+        conn.close()
+
+    @staticmethod
+    def validar_usuario(username, password):
+        """Valida las credenciales del usuario"""
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, username, email, password_hash, rol 
+            FROM usuarios 
+            WHERE username = ? AND activo = 1
+        ''', (username,))
+        
+        usuario = cursor.fetchone()
+        conn.close()
+        
+        if usuario and check_password_hash(usuario[3], password):
+            return {
+                'id': usuario[0],
+                'username': usuario[1],
+                'email': usuario[2],
+                'rol': usuario[4]
+            }
+        return None
+
+    @staticmethod
+    def registrar_usuario(username, email, password, rol='abogado'):
+        """Registra un nuevo usuario"""
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        
+        try:
+            password_hash = generate_password_hash(password)
+            cursor.execute('''
+                INSERT INTO usuarios (username, email, password_hash, rol)
+                VALUES (?, ?, ?, ?)
+            ''', (username, email, password_hash, rol))
+            
+            conn.commit()
+            print(f"✅ Usuario {username} registrado exitosamente")
+            return True
+            
+        except sqlite3.IntegrityError as e:
+            print(f"❌ Error al registrar usuario: {e}")
+            return False
+        finally:
+            conn.close()
+
+# Decorador para rutas protegidas
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Debe iniciar sesión para acceder a esta página', 'warning')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Decorador para rutas de admin
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Debe iniciar sesión para acceder a esta página', 'warning')
+            return redirect(url_for('login'))
+        if session.get('rol') != 'admin':
+            flash('No tiene permisos para acceder a esta página', 'error')
+            return redirect(url_for('dashboard'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Principio Single Responsibility: Cada función una tarea específica
 class DatabaseManager:
@@ -34,7 +149,9 @@ class DatabaseManager:
                 precio_final REAL NOT NULL,
                 servicios_adicionales TEXT,
                 propuesta_texto TEXT,
-                fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+                usuario_id INTEGER,
+                fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
             )
         ''')
         
@@ -53,8 +170,8 @@ class DatabaseManager:
                 INSERT INTO cotizaciones 
                 (numero_cotizacion, nombre_cliente, email, tipo_servicio, 
                  descripcion_caso, precio_base, complejidad, ajuste_precio, 
-                 precio_final, servicios_adicionales, propuesta_texto)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 precio_final, servicios_adicionales, propuesta_texto, usuario_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 cotizacion_data['numero_cotizacion'],
                 cotizacion_data['nombre_cliente'],
@@ -66,7 +183,8 @@ class DatabaseManager:
                 cotizacion_data['ajuste_precio'],
                 cotizacion_data['precio_final'],
                 json.dumps(cotizacion_data['servicios_adicionales']),
-                cotizacion_data['propuesta_texto']
+                cotizacion_data['propuesta_texto'],
+                session.get('user_id')
             ))
             
             conn.commit()
@@ -76,6 +194,64 @@ class DatabaseManager:
         except Exception as e:
             print(f"✗ Error al guardar cotización: {e}")
             return False
+        finally:
+            conn.close()
+
+    @staticmethod
+    def obtener_cotizaciones_usuario(usuario_id):
+        """Obtiene las cotizaciones de un usuario específico"""
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT numero_cotizacion, nombre_cliente, tipo_servicio, 
+                   precio_final, fecha_creacion
+            FROM cotizaciones 
+            WHERE usuario_id = ?
+            ORDER BY fecha_creacion DESC
+        ''', (usuario_id,))
+        
+        cotizaciones = cursor.fetchall()
+        conn.close()
+        
+        return cotizaciones
+
+# NUEVA CLASE: Migración de base de datos
+class DatabaseMigration:
+    @staticmethod
+    def verificar_y_migrar():
+        """Verifica la estructura de la BD y migra si es necesario"""
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        
+        try:
+            # Verificar si existe la columna usuario_id
+            cursor.execute("PRAGMA table_info(cotizaciones)")
+            columnas = [info[1] for info in cursor.fetchall()]
+            
+            if 'usuario_id' not in columnas:
+                print("🔄 Migrando base de datos: agregando columna usuario_id...")
+                
+                # Agregar columna usuario_id
+                cursor.execute('''
+                    ALTER TABLE cotizaciones 
+                    ADD COLUMN usuario_id INTEGER
+                ''')
+                
+                # Actualizar registros existentes con usuario_id = 1 (admin)
+                cursor.execute('''
+                    UPDATE cotizaciones 
+                    SET usuario_id = 1 
+                    WHERE usuario_id IS NULL
+                ''')
+                
+                conn.commit()
+                print("✅ Migración completada exitosamente")
+            else:
+                print("✓ Base de datos actualizada")
+                
+        except Exception as e:
+            print(f"❌ Error en migración: {e}")
         finally:
             conn.close()
 
@@ -267,15 +443,93 @@ class IAAnalyzer:
                 'propuesta_texto': 'Estimado cliente, hemos analizado su caso y consideramos que requiere atención especializada de nuestro equipo legal. Nos comprometemos a brindarle un servicio profesional y oportuno, asegurando que todos los aspectos legales sean manejados con la mayor diligencia. La propuesta incluye todos los servicios necesarios para resolver su situación de manera efectiva y dentro de los plazos establecidos.'
             }
         }
-# RUTAS DE LA APLICACIÓN
+
+# ===============================
+# RUTAS PÚBLICAS (SIN AUTENTICACIÓN)
+# ===============================
+
 @app.route('/')
 def index():
-    """Ruta principal que muestra el formulario"""
-    return render_template('index.html')
+    """NUEVA: Landing page pública - NO requiere autenticación"""
+    return render_template('landing.html')
 
-@app.route('/generar-cotizacion', methods=['POST'])
+# ===============================
+# RUTAS DE AUTENTICACIÓN
+# ===============================
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Ruta para iniciar sesión"""
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        usuario = UserManager.validar_usuario(username, password)
+        
+        if usuario:
+            session['user_id'] = usuario['id']
+            session['username'] = usuario['username']
+            session['email'] = usuario['email']
+            session['rol'] = usuario['rol']
+            
+            flash(f'¡Bienvenido, {usuario["username"]}!', 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            flash('Credenciales incorrectas', 'error')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    """Ruta para cerrar sesión"""
+    username = session.get('username', 'Usuario')
+    session.clear()
+    flash(f'Sesión cerrada. ¡Hasta pronto, {username}!', 'info')
+    return redirect(url_for('index'))  # CAMBIADO: Redirige a landing page
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    """Ruta para registrar nuevo usuario"""
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        
+        if UserManager.registrar_usuario(username, email, password):
+            flash('Usuario registrado exitosamente. Puede iniciar sesión.', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('Error al registrar usuario. Nombre de usuario o email ya existe.', 'error')
+    
+    return render_template('register.html')
+
+# ===============================
+# RUTAS PROTEGIDAS DEL SISTEMA
+# ===============================
+
+@app.route('/sistema')
+@login_required
+def sistema():
+    """NUEVA: Página principal del sistema - redirige a dashboard"""
+    return redirect(url_for('dashboard'))
+
+@app.route('/sistema/dashboard')
+@login_required
+def dashboard():
+    """Dashboard principal después del login"""
+    cotizaciones = DatabaseManager.obtener_cotizaciones_usuario(session['user_id'])
+    return render_template('dashboard.html', cotizaciones=cotizaciones)
+
+@app.route('/sistema/cotizar')
+@login_required
+def cotizar():
+    """Ruta para crear cotizaciones - PROTEGIDA"""
+    return render_template('cotizacion.html')  # CAMBIADO: ahora se llama cotizacion.html
+
+@app.route('/sistema/generar-cotizacion', methods=['POST'])
+@login_required
 def generar_cotizacion():
-    """Ruta para generar una nueva cotización con análisis de IA"""
+    """Ruta para generar una nueva cotización con análisis de IA - PROTEGIDA"""
     try:
         # Recibir datos del formulario
         datos = request.get_json()
@@ -285,7 +539,7 @@ def generar_cotizacion():
                    datos.get('tipoServicio'), datos.get('descripcionCaso')]):
             return jsonify({'success': False, 'error': 'Datos incompletos'})
         
-        print(f"📝 Procesando cotización para: {datos['nombreCliente']}")
+        print(f"📝 Procesando cotización para: {datos['nombreCliente']} (Usuario: {session['username']})")
         
         # Generar número único
         numero_cotizacion = CotizacionGenerator.generar_numero_cotizacion()
@@ -347,9 +601,17 @@ def generar_cotizacion():
 
 # Ejecutar la aplicación
 if __name__ == '__main__':
-    # Crear tabla al iniciar la aplicación
+    # Crear tablas al iniciar la aplicación
     print("🗄️ Inicializando base de datos...")
+    UserManager.crear_tabla_usuarios()
     DatabaseManager.crear_tabla()
-    print("🚀 Iniciando servidor Flask con IA integrada...")
-    print("🌐 Accede a: http://localhost:5000")
+    
+    # ✅ NUEVA LÍNEA: Verificar y migrar BD
+    DatabaseMigration.verificar_y_migrar()
+    
+    UserManager.crear_usuario_admin()
+    print("🚀 Iniciando servidor Flask con autenticación...")
+    print("🌐 Landing page: http://localhost:5000")
+    print("🔐 Login: http://localhost:5000/login")
+    print("👤 Usuario admin: admin/admin123")
     app.run(debug=True)

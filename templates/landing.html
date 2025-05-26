@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Capital & Farmer - Servicios Legales Profesionales{% endblock %}
+
+{% block content %}
+<!-- Hero Section Mejorado -->
+<section class="hero is-fullheight-with-navbar is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns is-vcentered">
+                <div class="column is-6-desktop is-12-touch">
+                    <div class="content has-text-centered-mobile">
+                        <h1 class="title is-1-desktop is-2-touch has-text-weight-bold mb-4">
+                            <i class="fas fa-scales-balanced mr-3 has-text-warning"></i>
+                            Capital & Farmer
+                        </h1>
+                        <h2 class="subtitle is-3-desktop is-4-touch has-text-weight-semibold mb-5">
+                            Cotizaciones Legales con <span class="has-text-warning">Inteligencia Artificial</span>
+                        </h2>
+                        <p class="is-size-5-desktop is-size-6-touch has-text-light mb-6">
+                            Obtenga cotizaciones precisas al instante. Nuestra IA analiza automáticamente 
+                            la complejidad de su caso y genera propuestas profesionales personalizadas.
+                        </p>
+                        
+                        <div class="buttons is-centered are-large">
+                            <a href="{{ url_for('login') }}" class="button is-warning is-large is-rounded">
+                                <span class="icon">
+                                    <i class="fas fa-rocket"></i>
+                                </span>
+                                <span><strong>Comenzar Ahora</strong></span>
+                            </a>
+                            <a href="{{ url_for('register') }}" class="button is-light is-outlined is-large is-rounded">
+                                <span class="icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </span>
+                                <span>Registro Gratuito</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-6-desktop is-hidden-touch">
+                    <div class="has-text-centered">
+                        <div class="hero-image-container">
+                            <i class="fas fa-laptop-code fa-10x has-text-white-ter hero-icon"></i>
+                            <div class="floating-elements">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Servicios Section Simplificado -->
+<section class="section py-6">
+    <div class="container">
+        <div class="has-text-centered mb-6">
+            <h2 class="title is-2-desktop is-3-touch">Nuestros Servicios</h2>
+            <p class="subtitle is-5 has-text-grey">Cotizaciones automáticas con análisis inteligente</p>
+        </div>
+        
+        <div class="columns is-multiline is-centered">
+            <!-- Constitución de Empresa -->
+            <div class="column is-4-desktop is-6-tablet is-12-mobile">
+                <div class="card service-card">
+                    <div class="card-content has-text-centered">
+                        <div class="service-icon mb-4">
+                            <i class="fas fa-building fa-3x has-text-primary"></i>
+                        </div>
+                        <h3 class="title is-5">Constitución de Empresa</h3>
+                        <p class="price-tag has-text-weight-bold has-text-primary is-size-4 mb-3">S/ 1,500</p>
+                        <p class="has-text-grey-dark mb-4">
+                            Constitución completa de su empresa con todos los trámites SUNARP incluidos.
+                        </p>
+                        <div class="tags is-centered">
+                            <span class="tag is-primary is-light">SUNARP</span>
+                            <span class="tag is-primary is-light">Minuta</span>
+                            <span class="tag is-primary is-light">RUC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Defensa Laboral -->
+            <div class="column is-4-desktop is-6-tablet is-12-mobile">
+                <div class="card service-card featured-service">
+                    <div class="card-content has-text-centered">
+                        <div class="ribbon">Más Solicitado</div>
+                        <div class="service-icon mb-4">
+                            <i class="fas fa-users fa-3x has-text-warning"></i>
+                        </div>
+                        <h3 class="title is-5">Defensa Laboral</h3>
+                        <p class="price-tag has-text-weight-bold has-text-warning is-size-4 mb-3">S/ 2,000</p>
+                        <p class="has-text-grey-dark mb-4">
+                            Representación especializada en conflictos laborales y despidos.
+                        </p>
+                        <div class="tags is-centered">
+                            <span class="tag is-warning is-light">Despidos</span>
+                            <span class="tag is-warning is-light">Demandas</span>
+                            <span class="tag is-warning is-light">Liquidaciones</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consultoría Tributaria -->
+            <div class="column is-4-desktop is-6-tablet is-12-mobile">
+                <div class="card service-card">
+                    <div class="card-content has-text-centered">
+                        <div class="service-icon mb-4">
+                            <i class="fas fa-calculator fa-3x has-text-success"></i>
+                        </div>
+                        <h3 class="title is-5">Consultoría Tributaria</h3>
+                        <p class="price-tag has-text-weight-bold has-text-success is-size-4 mb-3">S/ 800</p>
+                        <p class="has-text-grey-dark mb-4">
+                            Asesoría fiscal y tributaria para optimizar sus obligaciones con SUNAT.
+                        </p>
+                        <div class="tags is-centered">
+                            <span class="tag is-success is-light">SUNAT</span>
+                            <span class="tag is-success is-light">Impuestos</span>
+                            <span class="tag is-success is-light">Planificación</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Características IA Simplificado -->
+<section class="section has-background-light py-6">
+    <div class="container">
+        <div class="has-text-centered mb-6">
+            <h2 class="title is-2-desktop is-3-touch">
+                <i class="fas fa-robot mr-3 has-text-primary"></i>
+                Potenciado por IA
+            </h2>
+            <p class="subtitle is-5">Análisis automático y cotizaciones inteligentes</p>
+        </div>
+        
+        <div class="columns is-multiline is-vcentered">
+            <div class="column is-6-tablet is-12-mobile">
+                <div class="ai-feature">
+                    <div class="level is-mobile">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <span class="icon is-large has-text-primary">
+                                    <i class="fas fa-brain fa-2x"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <div class="content">
+                                    <h4 class="title is-6 mb-2">Análisis Inteligente</h4>
+                                    <p class="is-size-7">Evaluación automática de complejidad: Baja, Media, Alta</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="column is-6-tablet is-12-mobile">
+                <div class="ai-feature">
+                    <div class="level is-mobile">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <span class="icon is-large has-text-warning">
+                                    <i class="fas fa-percentage fa-2x"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <div class="content">
+                                    <h4 class="title is-6 mb-2">Precios Dinámicos</h4>
+                                    <p class="is-size-7">Ajuste automático: 0%, 25% o 50% según complejidad</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="column is-6-tablet is-12-mobile">
+                <div class="ai-feature">
+                    <div class="level is-mobile">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <span class="icon is-large has-text-success">
+                                    <i class="fas fa-list-check fa-2x"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <div class="content">
+                                    <h4 class="title is-6 mb-2">Servicios Sugeridos</h4>
+                                    <p class="is-size-7">Recomendaciones automáticas de servicios adicionales</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="column is-6-tablet is-12-mobile">
+                <div class="ai-feature">
+                    <div class="level is-mobile">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <span class="icon is-large has-text-info">
+                                    <i class="fas fa-file-contract fa-2x"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <div class="content">
+                                    <h4 class="title is-6 mb-2">Propuestas Automáticas</h4>
+                                    <p class="is-size-7">Generación de propuestas legales personalizadas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Animaciones suaves al hacer scroll
+document.addEventListener('DOMContentLoaded', function() {
+    // Animación de aparición progresiva
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+
+    // Observar elementos para animación
+    document.querySelectorAll('.service-card, .ai-feature').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Efecto hover en las cards
+    document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Registro - Capital & Farmer{% endblock %}
+
+{% block content %}
+<div class="columns is-centered">
+    <div class="column is-5">
+        <div class="box">
+            <div class="has-text-centered mb-5">
+                <figure class="image is-64x64 is-inline-block">
+                    <i class="fas fa-user-plus fa-3x has-text-primary"></i>
+                </figure>
+                <h1 class="title is-4 mt-3">Crear Cuenta</h1>
+                <p class="subtitle is-6">Sistema de Cotizaciones Legales</p>
+            </div>
+
+            <!-- Mostrar mensajes flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="notification is-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' if category == 'info' else 'warning' }}">
+                            <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="field">
+                    <label class="label">Nombre de Usuario</label>
+                    <div class="control has-icons-left">
+                        <input class="input" type="text" name="username" placeholder="Nombre de usuario único" required>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-user"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Correo Electrónico</label>
+                    <div class="control has-icons-left">
+                        <input class="input" type="email" name="email" placeholder="ejemplo@correo.com" required>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Contraseña</label>
+                    <div class="control has-icons-left">
+                        <input class="input" type="password" name="password" placeholder="Contraseña segura" required>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-success is-fullwidth" type="submit">
+                            <span class="icon">
+                                <i class="fas fa-user-plus"></i>
+                            </span>
+                            <span>Crear Cuenta</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <hr>
+            <div class="has-text-centered">
+                <p>¿Ya tiene cuenta? 
+                    <a href="{{ url_for('login') }}" class="has-text-primary">
+                        <strong>Iniciar sesión aquí</strong>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
